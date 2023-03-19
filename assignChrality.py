@@ -1,10 +1,6 @@
 import numpy as np
 import pandas as pd
 
-FILE_PATH = './data/table.xlsx'
-
-Eii = {1: 'S11', 2: 'S22', 3: 'M11', 4: 'S33', 5: 'S44', 6: 'M22', 7: 'S55', 8: 'S66', 9: 'M33', 10: 'S77'}
-
 
 def get_pairs(num_hit: int):
     if num_hit == 1:
