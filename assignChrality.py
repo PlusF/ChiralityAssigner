@@ -6,6 +6,46 @@ FILE_PATH = './data/table.xlsx'
 Eii = {1: 'S11', 2: 'S22', 3: 'M11', 4: 'S33', 5: 'S44', 6: 'M22', 7: 'S55', 8: 'S66', 9: 'M33', 10: 'S77'}
 
 
+def get_pairs(num_hit: int):
+    if num_hit == 1:
+        return [
+            [[0, 0]],
+            [[0, 1]],
+            [[0, 2]],
+        ]
+
+    if num_hit == 2:
+        return [
+            [[0, 0]],
+            [[1, 0]],
+            [[0, 0], [1, 1]],
+            [[0, 1], [1, 0]],
+            [[0, 0], [1, 2]],
+            [[0, 2], [1, 0]],
+            [[0, 1], [1, 2]],
+            [[0, 2], [1, 1]],
+        ]
+
+    if num_hit == 3:
+        return [
+            [[0, 0]],
+            [[1, 0]],
+            [[2, 0]],
+            [[0, 0], [1, 1]],
+            [[0, 1], [1, 0]],
+            [[0, 0], [2, 1]],
+            [[0, 1], [2, 0]],
+            [[1, 0], [2, 1]],
+            [[1, 1], [2, 0]],
+            [[0, 0], [1, 1], [2, 2]],
+            [[0, 0], [1, 2], [2, 1]],
+            [[0, 1], [1, 0], [2, 2]],
+            [[0, 1], [1, 2], [2, 0]],
+            [[0, 2], [1, 1], [2, 2]],
+            [[0, 2], [1, 2], [2, 1]],
+        ]
+
+
 def combination(arr1: list, arr2: list):
     a = len(arr1)
     b = len(arr2)
@@ -13,41 +53,7 @@ def combination(arr1: list, arr2: list):
         print('a and b need to be 1~3.')
         return False
 
-    ret = []
-    if a == 1:
-        ret.append([[0, 0]])
-        ret.append([[0, 1]])
-        ret.append([[0, 2]])
-    elif a == 2:
-        # single-hit
-        ret.append([[0, 0]])
-        ret.append([[1, 0]])
-        # double-hit
-        ret.append([[0, 0], [1, 1]])
-        ret.append([[0, 1], [1, 0]])
-        ret.append([[0, 0], [1, 2]])
-        ret.append([[0, 2], [1, 0]])
-        ret.append([[0, 1], [1, 2]])
-        ret.append([[0, 2], [1, 1]])
-    elif a == 3:
-        # single-hit
-        ret.append([[0, 0]])
-        ret.append([[1, 0]])
-        ret.append([[2, 0]])
-        # double-hit
-        ret.append([[0, 0], [1, 1]])
-        ret.append([[0, 1], [1, 0]])
-        ret.append([[0, 0], [2, 1]])
-        ret.append([[0, 1], [2, 0]])
-        ret.append([[1, 0], [2, 1]])
-        ret.append([[1, 1], [2, 0]])
-        # triple-hit
-        ret.append([[0, 0], [1, 1], [2, 2]])
-        ret.append([[0, 0], [1, 2], [2, 1]])
-        ret.append([[0, 1], [1, 0], [2, 2]])
-        ret.append([[0, 1], [1, 2], [2, 0]])
-        ret.append([[0, 2], [1, 1], [2, 2]])
-        ret.append([[0, 2], [1, 2], [2, 1]])
+    pair_list_list = get_pairs(a)
 
     invalid_indices = []
     for index, val in enumerate(arr2):  # energy == 0 すなわち無効なエネルギーに対するペアを除く
@@ -55,7 +61,7 @@ def combination(arr1: list, arr2: list):
             invalid_indices.append(index)
 
     ret_clean = []
-    for pair_list in ret:  # retからinvalid_indicesを含むペアを除去
+    for pair_list in pair_list_list:  # invalid_indicesを含むペアを除去
         pair_list_clean = []
         for pair in pair_list:
             if pair[1] not in invalid_indices:
@@ -190,7 +196,16 @@ class Assigner:
 
 
 def main():
+    # from tqdm import tqdm
     ac = Assigner()
+    # r = np.arange(0.8, 3.07, 0.1)
+    # r = np.arange(1.49, 2.96, 0.1)
+    #
+    # for i in tqdm(r):
+    #     for j in r[i < r]:
+    #         for k in r[j < r]:
+    #             ac.assign([i, j, k])
+
     while True:
         try:
             peaks = list(map(float, input('ピークエネルギーを入力してください．\n1~3個の値を入力してください．\n例：1.4 1.5 2.1\n>').split()))
